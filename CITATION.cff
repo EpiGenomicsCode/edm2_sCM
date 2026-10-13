@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this code or the released checkpoints, please cite the paper below."
-title: "edm2_sCM: Stable Continuous-Time Consistency Distillation"
+title: "edm2_sCM: Code for Stable Continuous-Time Consistency Distillation (TMLR 2026)"
 authors:
   - family-names: Mathew
     given-names: Vinay Saji
@@ -31,6 +31,8 @@ preferred-citation:
     - family-names: Lai
       given-names: William KM
   journal: "Transactions on Machine Learning Research"
+  issn: "2835-8856"
+  notes: "Reproducibility Certification"
   year: 2026
   url: "https://openreview.net/forum?id=di6ofoWEU8"
 references:

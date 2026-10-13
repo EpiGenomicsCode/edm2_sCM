@@ -1,10 +1,14 @@
-# Stable Continuous-Time Consistency Distillation
+# Stable Continuous-Time Consistency Distillation (TMLR 2026)
 
-Code and checkpoints for
+[![TMLR 2026](https://img.shields.io/badge/TMLR-2026-1f4e79)](https://openreview.net/forum?id=di6ofoWEU8)
+[![Reproducibility Certification](https://img.shields.io/badge/TMLR-Reproducibility%20Certification-2e7d32)](https://openreview.net/forum?id=di6ofoWEU8)
+[![Checkpoints](https://img.shields.io/badge/%F0%9F%A4%97%20Checkpoints-edm2__sCM-yellow)](https://huggingface.co/vinaymatt/edm2_sCM)
+
+Official code and checkpoints for our paper, published in *Transactions on Machine Learning Research* (TMLR), 2026, with a **Reproducibility Certification**:
 
 **Stable Continuous-Time Consistency Distillation: An Empirical Study with a Multistep Extension**<br>
 Vinay Saji Mathew, Soundar R. Kumara, Gretta D. Kellogg, William KM Lai<br>
-*Transactions on Machine Learning Research*, 2026. [OpenReview](https://openreview.net/forum?id=di6ofoWEU8)
+**TMLR 2026 · Reproducibility Certification** · [Paper (OpenReview)](https://openreview.net/forum?id=di6ofoWEU8) · [Checkpoints](https://huggingface.co/vinaymatt/edm2_sCM) · [BibTeX](#citation)
 
 | TrigFlow teacher, 63 NFE | sCD student, 2 NFE |
 |---|---|
@@ -12,7 +16,9 @@ Vinay Saji Mathew, Soundar R. Kumara, Gretta D. Kellogg, William KM Lai<br>
 
 Uncurated class-conditional ImageNet-64 samples from the released checkpoints (EDM2-S backbone, no guidance), from the paper's appendix.
 
-This repository is a fork of [NVlabs/edm2](https://github.com/NVlabs/edm2). EDM2 is retired upstream, and this fork holds the code for the paper: a TrigFlow/sCM reimplementation on EDM2, the multistep extension MS-sCD, and the MSCD and moment-matching baselines. The original EDM2 README is in [docs/README_EDM2.md](docs/README_EDM2.md). The upstream tools (`train_edm2.py`, `reconstruct_phema.py`, `dataset_tool.py`, `toy_example.py`) are unchanged.
+**TL;DR.** An independent reproducibility study of continuous-time consistency models (sCM; [Lu and Song, 2025](https://arxiv.org/abs/2410.11081)) on CIFAR-10 and ImageNet-64. No open-weight TrigFlow teachers exist at these scales, so we train them from scratch and release them. Our sCD and sCT students reproduce the reported one- and two-step FID on CIFAR-10 but fall short on ImageNet-64, a gap that appears related to our teacher and to architectural choices the sCM paper leaves unspecified. We also trace a parameter-count gap of about 5% to the scale-and-shift conditioning projections in Adaptive Double Normalization. Finally, we propose **MS-sCD**, a continuous-time, segment-conditioned multistep generalization of sCD that recovers sCD at M=1, and compare it against discrete-time MSCD ([Heek et al., 2024](https://arxiv.org/abs/2403.06807)) at M = 2, 4 and 8.
+
+This repository holds the code for the paper: a TrigFlow/sCM reimplementation on EDM2, the multistep extension MS-sCD, and the MSCD and moment-matching baselines. The original EDM2 README is in [docs/README_EDM2.md](docs/README_EDM2.md). The upstream tools (`train_edm2.py`, `reconstruct_phema.py`, `dataset_tool.py`, `toy_example.py`) are unchanged. It is a fork of [NVlabs/edm2](https://github.com/NVlabs/edm2), which is retired upstream.
 
 Checkpoints and FID reference statistics: [huggingface.co/vinaymatt/edm2_sCM](https://huggingface.co/vinaymatt/edm2_sCM).
 
@@ -39,9 +45,9 @@ python calculate_metrics.py gen --net=checkpoints/<NET> --ref=checkpoints/fid_re
     --metrics=fid --num=50000 --seed=0 --batch=<BATCH> <SAMPLER FLAGS>
 ```
 
-Use `--batch=512` for CIFAR-10 and `--batch=128` for ImageNet-64. The paper reports the best FID over a sweep of generator seeds, so `--seed=0` lands close to the table value rather than on it. The appendix lists the mean and standard deviation over seeds.
+Use `--batch=512` for CIFAR-10 and `--batch=128` for ImageNet-64. The tables below give the checkpoints behind the main results of the TMLR paper (Tables 1–4). The paper reports the best FID over a sweep of generator seeds, so `--seed=0` lands close to the table value rather than on it. The appendix lists the mean and standard deviation over seeds.
 
-CIFAR-10, unconditional, DDPM++ backbone. Reference: `fid_refs/cifar10-32x32.npz`.
+CIFAR-10, unconditional, DDPM++ backbone (paper Tables 1 and 3). Reference: `fid_refs/cifar10-32x32.npz`.
 
 | Model | `--net` | Sampler flags | NFE | FID |
 |---|---|---|---|---|
@@ -51,7 +57,7 @@ CIFAR-10, unconditional, DDPM++ backbone. Reference: `fid_refs/cifar10-32x32.npz
 | sCT | `cifar10/sct/phema-0203423-0.075.pkl` | `--sampler=scm --steps=1` | 1 | 2.88 |
 | sCT | same | `--sampler=scm --steps=2` | 2 | 2.09 |
 
-ImageNet-64, class-conditional, EDM2-S backbone, no guidance. Reference: `fid_refs/edm2_img64_custom_ref.pkl`. This is our own set of training-set statistics; other ImageNet-64 references give different numbers.
+ImageNet-64, class-conditional, EDM2-S backbone, no guidance (paper Tables 1, 2 and 4). Reference: `fid_refs/edm2_img64_custom_ref.pkl`. This is our own set of training-set statistics; other ImageNet-64 references give different numbers.
 
 | Model | `--net` | Sampler flags | NFE | FID |
 |---|---|---|---|---|
@@ -189,12 +195,16 @@ CC BY-NC-SA 4.0, as for EDM and EDM2 ([LICENSE.txt](LICENSE.txt)). Files taken f
 
 ## Citation
 
+If you use this code or the released checkpoints, please cite our TMLR paper:
+
 ```bibtex
 @article{mathew2026stable,
   title   = {Stable Continuous-Time Consistency Distillation: An Empirical Study with a Multistep Extension},
   author  = {Mathew, Vinay Saji and Kumara, Soundar R. and Kellogg, Gretta D. and Lai, William KM},
   journal = {Transactions on Machine Learning Research},
+  issn    = {2835-8856},
   year    = {2026},
+  note    = {Reproducibility Certification},
   url     = {https://openreview.net/forum?id=di6ofoWEU8}
 }
 ```
